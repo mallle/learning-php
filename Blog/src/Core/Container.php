@@ -5,6 +5,7 @@ namespace App\Core;
 use PDO;
 use PDOException;
 use App\Post\PostsRepository;
+use App\Comment\CommentsRepository;
 use App\Post\PostsController;
 
 class Container
@@ -19,11 +20,17 @@ class Container
 		$this->recipes = [
 			'postsController' => function(){
 				return new PostsController(
-					$this->make('postsRepository')
+					$this->make('postsRepository'),
+					$this->make('commentsRepository')
 				);
 			},
 			'postsRepository' => function() {
 				return new PostsRepository(
+				  $this->make("pdo")
+				);
+			},
+			'commentsRepository' => function() {
+				return new CommentsRepository(
 				  $this->make("pdo")
 				);
 			},
