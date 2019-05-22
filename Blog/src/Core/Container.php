@@ -5,8 +5,16 @@ namespace App\Core;
 use PDO;
 use PDOException;
 use App\Post\PostsRepository;
-use App\Comment\CommentsRepository;
 use App\Post\PostsController;
+use App\Post\PostsAdminController;
+
+
+use App\Comment\CommentsRepository;
+
+use App\User\UsersRepository;
+use App\User\LoginController;
+use App\User\LoginService;
+
 
 class Container
 {
@@ -18,6 +26,17 @@ class Container
 	public function __construct()
 	{
 		$this->recipes = [
+			'postsAdminController' => function(){
+				return new PostsAdminController(
+					$this->make('postsRepository'),
+					$this->make('loginService')
+				);
+			},
+			'loginService' => function(){
+				return new LoginService(
+					$this->make('usersRepository')
+				);
+			},
 			'postsController' => function(){
 				return new PostsController(
 					$this->make('postsRepository'),
@@ -32,6 +51,16 @@ class Container
 			'commentsRepository' => function() {
 				return new CommentsRepository(
 				  $this->make("pdo")
+				);
+			},
+			'usersRepository' => function() {
+				return new UsersRepository(
+				  $this->make("pdo")
+				);
+			},
+			'loginController' => function(){
+				return new LoginController(
+					$this->make('loginService')
 				);
 			},
 			'pdo' => function(){
